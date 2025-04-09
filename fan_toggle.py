@@ -25,6 +25,8 @@ from argparse import ArgumentParser
 from gnuradio.eng_arg import eng_float, intx
 from gnuradio import eng_notation
 from gnuradio import soapy
+from gnuradio import uhd
+import time
 import sip
 
 
@@ -78,6 +80,21 @@ class fan_toggle(gr.top_block, Qt.QWidget):
         # Blocks
         ##################################################
 
+        self.uhd_usrp_sink_0 = uhd.usrp_sink(
+            ",".join(("", '')),
+            uhd.stream_args(
+                cpu_format="fc32",
+                args='',
+                channels=list(range(0,1)),
+            ),
+            "",
+        )
+        self.uhd_usrp_sink_0.set_samp_rate(samp_rate)
+        # No synchronization enforced.
+
+        self.uhd_usrp_sink_0.set_center_freq(f_carrier, 0)
+        self.uhd_usrp_sink_0.set_antenna("TX/RX", 0)
+        self.uhd_usrp_sink_0.set_gain(0, 0)
         self.soapy_hackrf_sink_0 = None
         dev = 'driver=hackrf'
         stream_args = ''
@@ -153,6 +170,7 @@ class fan_toggle(gr.top_block, Qt.QWidget):
         self.connect((self.blocks_float_to_complex_0, 0), (self.blocks_multiply_xx_0, 1))
         self.connect((self.blocks_multiply_xx_0, 0), (self.qtgui_freq_sink_x_0, 0))
         self.connect((self.blocks_multiply_xx_0, 0), (self.soapy_hackrf_sink_0, 0))
+        self.connect((self.blocks_multiply_xx_0, 0), (self.uhd_usrp_sink_0, 0))
         self.connect((self.blocks_repeat_0, 0), (self.blocks_uchar_to_float_0, 0))
         self.connect((self.blocks_throttle2_0, 0), (self.blocks_multiply_xx_0, 0))
         self.connect((self.blocks_uchar_to_float_0, 0), (self.blocks_float_to_complex_0, 0))
@@ -179,6 +197,7 @@ class fan_toggle(gr.top_block, Qt.QWidget):
         self.blocks_throttle2_0.set_sample_rate(self.samp_rate)
         self.qtgui_freq_sink_x_0.set_frequency_range(0, self.samp_rate)
         self.soapy_hackrf_sink_0.set_sample_rate(0, self.samp_rate)
+        self.uhd_usrp_sink_0.set_samp_rate(self.samp_rate)
 
     def get_device_code(self):
         return self.device_code
@@ -235,6 +254,7 @@ class fan_toggle(gr.top_block, Qt.QWidget):
     def set_f_carrier(self, f_carrier):
         self.f_carrier = f_carrier
         self.soapy_hackrf_sink_0.set_frequency(0, self.f_carrier)
+        self.uhd_usrp_sink_0.set_center_freq(self.f_carrier, 0)
 
 
 
