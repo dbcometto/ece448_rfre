@@ -37,7 +37,7 @@ blocks:
   id: variable
   parameters:
     comment: ''
-    value: '0.063'
+    value: '0.0063'
   states:
     bus_sink: false
     bus_source: false
@@ -45,7 +45,61 @@ blocks:
     coordinate: [400, 8.0]
     rotation: 0
     state: enabled
-- name: code_1
+- name: code
+  id: variable_qtgui_chooser
+  parameters:
+    comment: ''
+    gui_hint: ''
+    label: Code Option
+    label0: None
+    label1: Toggle Light
+    label2: Toggle Fan
+    label3: ''
+    label4: ''
+    labels: '[]'
+    num_opts: '3'
+    option0: '0'
+    option1: '1'
+    option2: '2'
+    option3: '3'
+    option4: '4'
+    options: '[0, 1, 2]'
+    orient: Qt.QVBoxLayout
+    type: int
+    value: '1'
+    widget: combo_box
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [176, 108.0]
+    rotation: 0
+    state: enabled
+- name: code_end
+  id: variable
+  parameters:
+    comment: ''
+    value: (0,1,1,1,1,1,1,1)
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [1056, 80.0]
+    rotation: 0
+    state: enabled
+- name: code_fan
+  id: variable
+  parameters:
+    comment: ''
+    value: (0,0,0,0,0,1,1,0)
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [920, 80.0]
+    rotation: 0
+    state: enabled
+- name: code_light
   id: variable
   parameters:
     comment: ''
@@ -67,6 +121,18 @@ blocks:
     bus_source: false
     bus_structure: null
     coordinate: [776, 8.0]
+    rotation: 0
+    state: enabled
+- name: end_message
+  id: variable
+  parameters:
+    comment: ''
+    value: (1,) + device_code + code_end
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [616, 80.0]
     rotation: 0
     state: enabled
 - name: f_carrier
@@ -93,11 +159,24 @@ blocks:
     coordinate: [328, 8.0]
     rotation: 0
     state: enabled
+- name: long_waiting
+  id: variable
+  parameters:
+    comment: ''
+    value: 100*waiting
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [1056, 8.0]
+    rotation: 0
+    state: enabled
 - name: message
   id: variable
   parameters:
     comment: ''
-    value: (1,) + device_code + code_1
+    value: 'waiting if code == 0 else ( (1,) + device_code + (code_light if code ==
+      1 else code_fan)) '
   states:
     bus_sink: false
     bus_source: false
@@ -121,7 +200,7 @@ blocks:
   id: variable
   parameters:
     comment: ''
-    value: '5000000'
+    value: '1000000'
   states:
     bus_sink: false
     bus_source: false
@@ -133,12 +212,12 @@ blocks:
   id: variable
   parameters:
     comment: ''
-    value: ' tuple(2 for x in range(15))'
+    value: ' tuple(2 for x in range(1))'
   states:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [952, 8.0]
+    coordinate: [920, 8.0]
     rotation: 0
     state: enabled
 - name: analog_const_source_x_0
@@ -178,7 +257,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [176, 144.0]
+    coordinate: [536, 168.0]
     rotation: 0
     state: enabled
 - name: blocks_float_to_complex_0
@@ -230,7 +309,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [560, 448.0]
+    coordinate: [616, 448.0]
     rotation: 0
     state: enabled
 - name: blocks_throttle2_0
@@ -251,7 +330,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [384, 176.0]
+    coordinate: [760, 176.0]
     rotation: 0
     state: enabled
 - name: blocks_uchar_to_float_0
@@ -282,7 +361,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [408, 448.0]
+    coordinate: [464, 448.0]
     rotation: 0
     state: enabled
 - name: blocks_vector_source_x_0
@@ -296,13 +375,13 @@ blocks:
     repeat: 'True'
     tags: '[]'
     type: byte
-    vector: message + waiting
+    vector: 3*(message + waiting) + end_message + long_waiting
     vlen: '1'
   states:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [88, 432.0]
+    coordinate: [120, 432.0]
     rotation: 0
     state: enabled
 - name: digital_map_bb_0
@@ -318,7 +397,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [288, 448.0]
+    coordinate: [344, 448.0]
     rotation: 0
     state: enabled
 - name: osmosdr_sink_0
@@ -691,7 +770,7 @@ blocks:
     color8: dark red
     color9: dark green
     comment: ''
-    ctrlpanel: 'False'
+    ctrlpanel: 'True'
     entags: 'True'
     grid: 'False'
     gui_hint: ''
@@ -718,7 +797,7 @@ blocks:
     marker9: '-1'
     name: '""'
     nconnections: '1'
-    size: int(samp_rate/10)
+    size: int(samp_rate*10)
     srate: samp_rate
     stemplot: 'False'
     style1: '1'
@@ -759,7 +838,7 @@ blocks:
     bus_structure: null
     coordinate: [1416, 184.0]
     rotation: 0
-    state: disabled
+    state: enabled
 - name: qtgui_time_sink_x_0_0
   id: qtgui_time_sink_x
   parameters:
@@ -876,7 +955,7 @@ blocks:
     bus_structure: null
     coordinate: [1416, 360.0]
     rotation: 0
-    state: enabled
+    state: disabled
 - name: uhd_usrp_sink_0
   id: uhd_usrp_sink
   parameters:
@@ -990,7 +1069,7 @@ blocks:
     comment: ''
     dev_addr: '""'
     dev_args: ''
-    gain0: '0'
+    gain0: '70'
     gain1: '0'
     gain10: '0'
     gain11: '0'
@@ -1153,7 +1232,7 @@ blocks:
     bus_structure: null
     coordinate: [1384, 48.0]
     rotation: 0
-    state: enabled
+    state: disabled
 
 connections:
 - [analog_const_source_x_0, '0', blocks_float_to_complex_0, '1']
