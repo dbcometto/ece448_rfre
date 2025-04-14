@@ -64,19 +64,19 @@ class fan_toggle(gr.top_block, Qt.QWidget):
         ##################################################
         # Variables
         ##################################################
-        self.waiting = waiting =  tuple(2 for x in range(1))
+        self.waiting = waiting =  tuple(2 for x in range(10))
         self.samp_rate = samp_rate = 1000000
         self.device_code = device_code = (1,0,0,1)
         self.code_light = code_light = (0,0,0,0,0,1,1,1)
         self.code_fan = code_fan = (0,0,0,0,0,1,1,0)
         self.code_end = code_end = (0,1,1,1,1,1,1,1)
         self.code = code = 1
-        self.bit_interval = bit_interval = 0.0063
+        self.bit_interval = bit_interval = 0.00063
         self.repeat_for_time = repeat_for_time = int(samp_rate/3*bit_interval)
         self.message = message = waiting if code == 0 else ( (1,) + device_code + (code_light if code == 1 else code_fan))
-        self.long_waiting = long_waiting = 100*waiting
-        self.f_data = f_data = 18000
-        self.f_carrier = f_carrier = 350000000
+        self.long_waiting = long_waiting = 10*waiting
+        self.f_data = f_data = 10000
+        self.f_carrier = f_carrier = 349990000
         self.end_message = end_message = (1,) + device_code + code_end
 
         ##################################################
@@ -193,7 +193,7 @@ class fan_toggle(gr.top_block, Qt.QWidget):
             lambda i: self.set_code(self._code_options[i]))
         # Create the radio buttons
         self.top_layout.addWidget(self._code_tool_bar)
-        self.blocks_vector_source_x_0 = blocks.vector_source_b(3*(message + waiting) + end_message + long_waiting, True, 1, [])
+        self.blocks_vector_source_x_0 = blocks.vector_source_b(15*(message + waiting) + 3*(end_message+waiting) + long_waiting, True, 1, [])
         self.blocks_unpack_k_bits_bb_0 = blocks.unpack_k_bits_bb(3)
         self.blocks_uchar_to_float_0 = blocks.uchar_to_float()
         self.blocks_throttle2_0 = blocks.throttle( gr.sizeof_gr_complex*1, samp_rate, True, 0 if "auto" == "auto" else max( int(float(0.1) * samp_rate) if "auto" == "time" else int(0.1), 1) )
@@ -233,9 +233,9 @@ class fan_toggle(gr.top_block, Qt.QWidget):
 
     def set_waiting(self, waiting):
         self.waiting = waiting
-        self.set_long_waiting(100*self.waiting)
+        self.set_long_waiting(10*self.waiting)
         self.set_message(self.waiting if self.code == 0 else ( (1,) + self.device_code + (self.code_light if self.code == 1 else self.code_fan)) )
-        self.blocks_vector_source_x_0.set_data(3*(self.message + self.waiting) + self.end_message + self.long_waiting, [])
+        self.blocks_vector_source_x_0.set_data(15*(self.message + self.waiting) + 3*(self.end_message+self.waiting) + self.long_waiting, [])
 
     def get_samp_rate(self):
         return self.samp_rate
@@ -304,14 +304,14 @@ class fan_toggle(gr.top_block, Qt.QWidget):
 
     def set_message(self, message):
         self.message = message
-        self.blocks_vector_source_x_0.set_data(3*(self.message + self.waiting) + self.end_message + self.long_waiting, [])
+        self.blocks_vector_source_x_0.set_data(15*(self.message + self.waiting) + 3*(self.end_message+self.waiting) + self.long_waiting, [])
 
     def get_long_waiting(self):
         return self.long_waiting
 
     def set_long_waiting(self, long_waiting):
         self.long_waiting = long_waiting
-        self.blocks_vector_source_x_0.set_data(3*(self.message + self.waiting) + self.end_message + self.long_waiting, [])
+        self.blocks_vector_source_x_0.set_data(15*(self.message + self.waiting) + 3*(self.end_message+self.waiting) + self.long_waiting, [])
 
     def get_f_data(self):
         return self.f_data
@@ -331,7 +331,7 @@ class fan_toggle(gr.top_block, Qt.QWidget):
 
     def set_end_message(self, end_message):
         self.end_message = end_message
-        self.blocks_vector_source_x_0.set_data(3*(self.message + self.waiting) + self.end_message + self.long_waiting, [])
+        self.blocks_vector_source_x_0.set_data(15*(self.message + self.waiting) + 3*(self.end_message+self.waiting) + self.long_waiting, [])
 
 
 

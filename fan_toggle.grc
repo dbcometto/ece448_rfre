@@ -37,12 +37,12 @@ blocks:
   id: variable
   parameters:
     comment: ''
-    value: '0.0063'
+    value: '0.00063'
   states:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [400, 8.0]
+    coordinate: [416, 8.0]
     rotation: 0
     state: enabled
 - name: code
@@ -139,7 +139,7 @@ blocks:
   id: variable
   parameters:
     comment: ''
-    value: '350000000'
+    value: '349990000'
   states:
     bus_sink: false
     bus_source: false
@@ -151,19 +151,19 @@ blocks:
   id: variable
   parameters:
     comment: ''
-    value: '18000'
+    value: '10000'
   states:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [328, 8.0]
+    coordinate: [344, 8.0]
     rotation: 0
     state: enabled
 - name: long_waiting
   id: variable
   parameters:
     comment: ''
-    value: 100*waiting
+    value: 10*waiting
   states:
     bus_sink: false
     bus_source: false
@@ -193,7 +193,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [488, 8.0]
+    coordinate: [504, 8.0]
     rotation: 0
     state: enabled
 - name: samp_rate
@@ -205,14 +205,14 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [240, 8.0]
+    coordinate: [256, 8.0]
     rotation: 0
     state: enabled
 - name: waiting
   id: variable
   parameters:
     comment: ''
-    value: ' tuple(2 for x in range(1))'
+    value: ' tuple(2 for x in range(10))'
   states:
     bus_sink: false
     bus_source: false
@@ -375,7 +375,7 @@ blocks:
     repeat: 'True'
     tags: '[]'
     type: byte
-    vector: 3*(message + waiting) + end_message + long_waiting
+    vector: 15*(message + waiting) + 3*(end_message+waiting) + long_waiting
     vlen: '1'
   states:
     bus_sink: false
